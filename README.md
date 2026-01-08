@@ -1,4 +1,4 @@
-# Native Lichess App for Apple Silicon
+# Native YouTube App for Apple Silicon
 
 A lightweight, native macOS YouTube client built with SwiftUI. Designed specifically for Apple Silicon Macs, it provides a clean, distraction-free way to browse and watch YouTube without the overhead of a web browser.
 
