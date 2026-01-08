@@ -1,0 +1,483 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1E65F7D0387D4E6D9336CE24 /* FormatCacheService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031618C103E24CB292BC28D5 /* FormatCacheService.swift */; };
+		A10000000000000000000001 /* YouTubeAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000001 /* YouTubeAppApp.swift */; };
+		A10000000000000000000002 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* MainView.swift */; };
+		A10000000000000000000003 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* HomeView.swift */; };
+		A10000000000000000000004 /* SubscriptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000004 /* SubscriptionsView.swift */; };
+		A10000000000000000000005 /* PlaylistsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000005 /* PlaylistsView.swift */; };
+		A10000000000000000000006 /* PlaylistDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000006 /* PlaylistDetailView.swift */; };
+		A10000000000000000000007 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000007 /* SearchView.swift */; };
+		A10000000000000000000008 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000008 /* VideoPlayerView.swift */; };
+		A10000000000000000000009 /* VideoThumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000009 /* VideoThumbnail.swift */; };
+		A10000000000000000000010 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000010 /* LoadingView.swift */; };
+		A10000000000000000000011 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000011 /* Video.swift */; };
+		A10000000000000000000012 /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000012 /* Playlist.swift */; };
+		A10000000000000000000013 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000013 /* Channel.swift */; };
+		A10000000000000000000014 /* YTDLPService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000014 /* YTDLPService.swift */; };
+		A10000000000000000000015 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000015 /* HomeViewModel.swift */; };
+		A10000000000000000000016 /* SubscriptionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000016 /* SubscriptionsViewModel.swift */; };
+		A10000000000000000000017 /* PlaylistsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000017 /* PlaylistsViewModel.swift */; };
+		A10000000000000000000018 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000018 /* SearchViewModel.swift */; };
+		A10000000000000000000019 /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000019 /* PlayerViewModel.swift */; };
+		A10000000000000000000020 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000020 /* Assets.xcassets */; };
+		A10000000000000000000021 /* WebVideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000022 /* WebVideoPlayerView.swift */; };
+		B40000000000000000000001 /* ThumbnailCacheService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30000000000000000000001 /* ThumbnailCacheService.swift */; };
+		B40000000000000000000002 /* CachedAsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30000000000000000000002 /* CachedAsyncImage.swift */; };
+		C40000000000000000000001 /* SettingsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30000000000000000000001 /* SettingsService.swift */; };
+		C40000000000000000000002 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30000000000000000000002 /* SettingsView.swift */; };
+		D10000000000000000000001 /* LiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D20000000000000000000001 /* LiveView.swift */; };
+		D10000000000000000000002 /* LiveViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D20000000000000000000002 /* LiveViewModel.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A20000000000000000000001 /* YouTubeAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubeAppApp.swift; sourceTree = "<group>"; };
+		A20000000000000000000002 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		A20000000000000000000003 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		A20000000000000000000004 /* SubscriptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionsView.swift; sourceTree = "<group>"; };
+		A20000000000000000000005 /* PlaylistsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistsView.swift; sourceTree = "<group>"; };
+		A20000000000000000000006 /* PlaylistDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistDetailView.swift; sourceTree = "<group>"; };
+		A20000000000000000000007 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		A20000000000000000000008 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
+		A20000000000000000000009 /* VideoThumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoThumbnail.swift; sourceTree = "<group>"; };
+		A20000000000000000000010 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		A20000000000000000000011 /* Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
+		A20000000000000000000012 /* Playlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
+		A20000000000000000000013 /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
+		A20000000000000000000014 /* YTDLPService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YTDLPService.swift; sourceTree = "<group>"; };
+		031618C103E24CB292BC28D5 /* FormatCacheService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatCacheService.swift; sourceTree = "<group>"; };
+		A20000000000000000000015 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		A20000000000000000000016 /* SubscriptionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionsViewModel.swift; sourceTree = "<group>"; };
+		A20000000000000000000017 /* PlaylistsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistsViewModel.swift; sourceTree = "<group>"; };
+		A20000000000000000000018 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
+		A20000000000000000000019 /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
+		A20000000000000000000020 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A20000000000000000000021 /* YouTubeApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = YouTubeApp.entitlements; sourceTree = "<group>"; };
+		A20000000000000000000022 /* WebVideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebVideoPlayerView.swift; sourceTree = "<group>"; };
+		A30000000000000000000001 /* YouTubeApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YouTubeApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B30000000000000000000001 /* ThumbnailCacheService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailCacheService.swift; sourceTree = "<group>"; };
+		B30000000000000000000002 /* CachedAsyncImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedAsyncImage.swift; sourceTree = "<group>"; };
+		C30000000000000000000001 /* SettingsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsService.swift; sourceTree = "<group>"; };
+		C30000000000000000000002 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		D20000000000000000000001 /* LiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveView.swift; sourceTree = "<group>"; };
+		D20000000000000000000002 /* LiveViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveViewModel.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A40000000000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A50000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				A50000000000000000000002 /* YouTubeApp */,
+				A50000000000000000000010 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A50000000000000000000002 /* YouTubeApp */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000001 /* YouTubeAppApp.swift */,
+				A50000000000000000000003 /* Models */,
+				A50000000000000000000004 /* Services */,
+				A50000000000000000000005 /* ViewModels */,
+				A50000000000000000000006 /* Views */,
+				A50000000000000000000009 /* Resources */,
+				A20000000000000000000021 /* YouTubeApp.entitlements */,
+			);
+			path = YouTubeApp;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000003 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000011 /* Video.swift */,
+				A20000000000000000000012 /* Playlist.swift */,
+				A20000000000000000000013 /* Channel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000004 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000014 /* YTDLPService.swift */,
+				031618C103E24CB292BC28D5 /* FormatCacheService.swift */,
+				B30000000000000000000001 /* ThumbnailCacheService.swift */,
+				C30000000000000000000001 /* SettingsService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000005 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000015 /* HomeViewModel.swift */,
+				A20000000000000000000016 /* SubscriptionsViewModel.swift */,
+				A20000000000000000000017 /* PlaylistsViewModel.swift */,
+				A20000000000000000000018 /* SearchViewModel.swift */,
+				D20000000000000000000002 /* LiveViewModel.swift */,
+				A20000000000000000000019 /* PlayerViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000006 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000002 /* MainView.swift */,
+				A20000000000000000000003 /* HomeView.swift */,
+				A20000000000000000000004 /* SubscriptionsView.swift */,
+				A20000000000000000000005 /* PlaylistsView.swift */,
+				A20000000000000000000006 /* PlaylistDetailView.swift */,
+				A20000000000000000000007 /* SearchView.swift */,
+				D20000000000000000000001 /* LiveView.swift */,
+				A20000000000000000000008 /* VideoPlayerView.swift */,
+				A20000000000000000000022 /* WebVideoPlayerView.swift */,
+				C30000000000000000000002 /* SettingsView.swift */,
+				A50000000000000000000007 /* Components */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000007 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000009 /* VideoThumbnail.swift */,
+				A20000000000000000000010 /* LoadingView.swift */,
+				B30000000000000000000002 /* CachedAsyncImage.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000009 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000020 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000010 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A30000000000000000000001 /* YouTubeApp.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A60000000000000000000001 /* YouTubeApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A80000000000000000000001 /* Build configuration list for PBXNativeTarget "YouTubeApp" */;
+			buildPhases = (
+				A70000000000000000000001 /* Sources */,
+				A40000000000000000000001 /* Frameworks */,
+				A70000000000000000000002 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = YouTubeApp;
+			productName = YouTubeApp;
+			productReference = A30000000000000000000001 /* YouTubeApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A90000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					A60000000000000000000001 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = A80000000000000000000002 /* Build configuration list for PBXProject "YouTubeApp" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A50000000000000000000001;
+			productRefGroup = A50000000000000000000010 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A60000000000000000000001 /* YouTubeApp */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A70000000000000000000002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000020 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A70000000000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000001 /* YouTubeAppApp.swift in Sources */,
+				A10000000000000000000002 /* MainView.swift in Sources */,
+				A10000000000000000000003 /* HomeView.swift in Sources */,
+				A10000000000000000000004 /* SubscriptionsView.swift in Sources */,
+				A10000000000000000000005 /* PlaylistsView.swift in Sources */,
+				A10000000000000000000006 /* PlaylistDetailView.swift in Sources */,
+				A10000000000000000000007 /* SearchView.swift in Sources */,
+				D10000000000000000000001 /* LiveView.swift in Sources */,
+				A10000000000000000000008 /* VideoPlayerView.swift in Sources */,
+				A10000000000000000000009 /* VideoThumbnail.swift in Sources */,
+				A10000000000000000000010 /* LoadingView.swift in Sources */,
+				A10000000000000000000011 /* Video.swift in Sources */,
+				A10000000000000000000012 /* Playlist.swift in Sources */,
+				A10000000000000000000013 /* Channel.swift in Sources */,
+				A10000000000000000000014 /* YTDLPService.swift in Sources */,
+				A10000000000000000000015 /* HomeViewModel.swift in Sources */,
+				A10000000000000000000016 /* SubscriptionsViewModel.swift in Sources */,
+				A10000000000000000000017 /* PlaylistsViewModel.swift in Sources */,
+				A10000000000000000000018 /* SearchViewModel.swift in Sources */,
+				D10000000000000000000002 /* LiveViewModel.swift in Sources */,
+				A10000000000000000000019 /* PlayerViewModel.swift in Sources */,
+				A10000000000000000000021 /* WebVideoPlayerView.swift in Sources */,
+				1E65F7D0387D4E6D9336CE24 /* FormatCacheService.swift in Sources */,
+				B40000000000000000000001 /* ThumbnailCacheService.swift in Sources */,
+				B40000000000000000000002 /* CachedAsyncImage.swift in Sources */,
+				C40000000000000000000001 /* SettingsService.swift in Sources */,
+				C40000000000000000000002 /* SettingsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		B10000000000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		B10000000000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		B10000000000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = YouTubeApp/YouTubeApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.youtubeapp.YouTubeApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		B10000000000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = YouTubeApp/YouTubeApp.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.youtubeapp.YouTubeApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A80000000000000000000001 /* Build configuration list for PBXNativeTarget "YouTubeApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B10000000000000000000003 /* Debug */,
+				B10000000000000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A80000000000000000000002 /* Build configuration list for PBXProject "YouTubeApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B10000000000000000000001 /* Debug */,
+				B10000000000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = A90000000000000000000001 /* Project object */;
+}
