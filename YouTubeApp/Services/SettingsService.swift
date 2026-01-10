@@ -7,8 +7,10 @@ class SettingsService: ObservableObject {
 
     // Keys
     private let preferredQualityKey = "preferredQuality"
+    private let qualityStartModeKey = "qualityStartMode"
     private let preferredAudioLanguageKey = "preferredAudioLanguage"
     private let disableDubbedAudioKey = "disableDubbedAudio"
+    private let cookiesBrowserKey = "cookiesBrowser"
 
     @Published var preferredQuality: PreferredQuality {
         didSet { defaults.set(preferredQuality.rawValue, forKey: preferredQualityKey) }
@@ -18,19 +20,80 @@ class SettingsService: ObservableObject {
         didSet { defaults.set(preferredAudioLanguage, forKey: preferredAudioLanguageKey) }
     }
 
+    @Published var qualityStartMode: QualityStartMode {
+        didSet { defaults.set(qualityStartMode.rawValue, forKey: qualityStartModeKey) }
+    }
+
     @Published var disableDubbedAudio: Bool {
         didSet { defaults.set(disableDubbedAudio, forKey: disableDubbedAudioKey) }
+    }
+
+    @Published var cookiesBrowser: CookiesBrowser {
+        didSet { defaults.set(cookiesBrowser.rawValue, forKey: cookiesBrowserKey) }
     }
 
     init() {
         let qualityRaw = defaults.string(forKey: preferredQualityKey) ?? PreferredQuality.auto.rawValue
         self.preferredQuality = PreferredQuality(rawValue: qualityRaw) ?? .auto
 
+        let startModeRaw = defaults.string(forKey: qualityStartModeKey) ?? QualityStartMode.instantUpgrade.rawValue
+        self.qualityStartMode = QualityStartMode(rawValue: startModeRaw) ?? .instantUpgrade
+
         // Empty string means "original/native" audio
         self.preferredAudioLanguage = defaults.string(forKey: preferredAudioLanguageKey) ?? ""
 
         // Default to disabling dubbed audio (prefer original)
         self.disableDubbedAudio = defaults.object(forKey: disableDubbedAudioKey) as? Bool ?? true
+
+        let browserRaw = defaults.string(forKey: cookiesBrowserKey) ?? CookiesBrowser.auto.rawValue
+        self.cookiesBrowser = CookiesBrowser(rawValue: browserRaw) ?? .auto
+    }
+}
+
+enum CookiesBrowser: String, CaseIterable, Identifiable {
+    case auto = "auto"
+    case chrome = "chrome"
+    case firefox = "firefox"
+    case safari = "safari"
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .auto: return "Auto"
+        case .chrome: return "Chrome"
+        case .firefox: return "Firefox"
+        case .safari: return "Safari"
+        }
+    }
+
+    var ytDlpValue: String {
+        switch self {
+        case .auto: return "auto"
+        case .chrome: return "chrome"
+        case .firefox: return "firefox"
+        case .safari: return "safari"
+        }
+    }
+
+    static var autoFallbackOrder: [CookiesBrowser] {
+        [.chrome, .safari, .firefox]
+    }
+}
+
+enum QualityStartMode: String, CaseIterable, Identifiable {
+    case instantUpgrade = "instantUpgrade"
+    case waitForQuality = "waitForQuality"
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .instantUpgrade:
+            return "Instant start, then upgrade"
+        case .waitForQuality:
+            return "Wait for selected quality"
+        }
     }
 }
 

@@ -57,6 +57,7 @@ brew install yt-dlp
 ### 2. Sign in to YouTube
 
 Open your browser and sign in to YouTube. The app reads your browser cookies to access subscriptions and playlists.
+In Settings > Authentication, choose the browser that has your YouTube session (Auto tries Chrome, Safari, then Firefox).
 
 ### 3. Build & Run
 
