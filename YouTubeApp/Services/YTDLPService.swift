@@ -36,11 +36,11 @@ actor YTDLPService {
     static let shared = YTDLPService()
 
     private let ytdlpPath: String
-    private let browser: String
+    private let browserOverride: CookiesBrowser?
 
-    init(ytdlpPath: String = "/opt/homebrew/bin/yt-dlp", browser: String = "chrome") {
+    init(ytdlpPath: String = "/opt/homebrew/bin/yt-dlp", browserOverride: CookiesBrowser? = nil) {
         self.ytdlpPath = ytdlpPath
-        self.browser = browser
+        self.browserOverride = browserOverride
     }
 
     // MARK: - Public Methods
@@ -50,9 +50,8 @@ actor YTDLPService {
     }
 
     func fetchHomeFeedRange(start: Int, end: Int) async throws -> [Video] {
-        let output = try await runYTDLP(
+        let output = try await runYTDLPWithCookies(
             args: [
-                "--cookies-from-browser", browser,
                 "-j",
                 "--flat-playlist",
                 "--playlist-start", "\(start)",
@@ -68,9 +67,8 @@ actor YTDLPService {
     }
 
     func fetchSubscriptionsFeedRange(start: Int, end: Int) async throws -> [Video] {
-        let output = try await runYTDLP(
+        let output = try await runYTDLPWithCookies(
             args: [
-                "--cookies-from-browser", browser,
                 "-j",
                 "--flat-playlist",
                 "--playlist-start", "\(start)",
@@ -87,9 +85,8 @@ actor YTDLPService {
 
     func fetchLiveFeedRange(start: Int, end: Int) async throws -> [Video] {
         do {
-            let output = try await runYTDLP(
+            let output = try await runYTDLPWithCookies(
                 args: [
-                    "--cookies-from-browser", browser,
                     "-j",
                     "--flat-playlist",
                     "--playlist-start", "\(start)",
@@ -114,9 +111,8 @@ actor YTDLPService {
 
     func fetchPlaylistsRange(start: Int, end: Int) async throws -> [Playlist] {
         print("[YTDLPService] Fetching playlists from YouTube...")
-        let output = try await runYTDLP(
+        let output = try await runYTDLPWithCookies(
             args: [
-                "--cookies-from-browser", browser,
                 "-j",
                 "--flat-playlist",
                 "--playlist-start", "\(start)",
@@ -133,8 +129,8 @@ actor YTDLPService {
     func fetchPlaylistVideos(playlistId: String, limit: Int = 100) async throws -> [Video] {
         let url = "https://www.youtube.com/playlist?list=\(playlistId)"
         print("[YTDLPService] Fetching playlist videos from: \(url)")
-        let output = try await runYTDLP(
-            args: ["--cookies-from-browser", browser, "-j", "--flat-playlist", "--playlist-end", "\(limit)", url]
+        let output = try await runYTDLPWithCookies(
+            args: ["-j", "--flat-playlist", "--playlist-end", "\(limit)", url]
         )
         print("[YTDLPService] Raw output length: \(output.count) characters")
         let videos = parseVideos(from: output)
@@ -144,17 +140,17 @@ actor YTDLPService {
 
     func fetchPlaylistVideosRange(playlistId: String, start: Int, end: Int) async throws -> [Video] {
         let url = "https://www.youtube.com/playlist?list=\(playlistId)"
-        let output = try await runYTDLP(
-            args: ["--cookies-from-browser", browser, "-j", "--flat-playlist", "--playlist-start", "\(start)", "--playlist-end", "\(end)", url]
+        guard start <= end else { return [] }
+        let output = try await runYTDLPWithCookies(
+            args: ["-j", "--flat-playlist", "--playlist-items", "\(start)-\(end)", url]
         )
         return parseVideos(from: output)
     }
 
     func fetchPlaylistCount(playlistId: String) async throws -> Int? {
         let url = "https://www.youtube.com/playlist?list=\(playlistId)"
-        let output = try await runYTDLP(
+        let output = try await runYTDLPWithCookies(
             args: [
-                "--cookies-from-browser", browser,
                 "-J",
                 "--flat-playlist",
                 "--playlist-end", "1",
@@ -183,8 +179,8 @@ actor YTDLPService {
         let url = "https://www.youtube.com/watch?v=\(videoId)"
         // Format 22 = 720p mp4 with audio, Format 18 = 360p mp4 with audio
         // These are pre-merged formats that work with AVPlayer
-        let output = try await runYTDLP(
-            args: ["--cookies-from-browser", browser, "-f", preferredQuality, "-g", url]
+        let output = try await runYTDLPWithCookies(
+            args: ["-f", preferredQuality, "-g", url]
         )
 
         let urls = output.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -210,11 +206,12 @@ actor YTDLPService {
                 formatArg = "\(formatId)+bestaudio[ext=m4a]/best"
             }
         } else {
-            let heightFilter = "[height<=2160]"
+            let maxHeight = SettingsService.shared.preferredQuality.maxHeight ?? 2160
+            let heightFilter = "[height<=\(maxHeight)]"
             formatArg = "bestvideo[ext=mp4][vcodec^=avc1]\(heightFilter)+bestaudio[ext=m4a]/bestvideo[ext=mp4][vcodec^=hvc1]\(heightFilter)+bestaudio[ext=m4a]/bestvideo[ext=mp4][vcodec^=hev1]\(heightFilter)+bestaudio[ext=m4a]/best[ext=mp4]\(heightFilter)/best"
         }
-        let output = try await runYTDLP(
-            args: ["--cookies-from-browser", browser, "-f", formatArg, "-g", url]
+        let output = try await runYTDLPWithCookies(
+            args: ["-f", formatArg, "-g", url]
         )
 
         let urls = output
@@ -245,8 +242,8 @@ actor YTDLPService {
         let url = "https://www.youtube.com/watch?v=\(videoId)"
         logger.info("getVideoInfoCombined: Fetching for video \(videoId)")
 
-        let output = try await runYTDLP(
-            args: ["--cookies-from-browser", browser, "-J", "--no-playlist", url]
+        let output = try await runYTDLPWithCookies(
+            args: ["-J", "--no-playlist", url]
         )
         logger.info("getVideoInfoCombined: Got output, length: \(output.count)")
 
@@ -267,10 +264,10 @@ actor YTDLPService {
 
     /// Extract stream URLs from the formats JSON array
     private func extractStreamURLs(from formats: [[String: Any]], requestedFormat: VideoFormatOption?) throws -> StreamURLs {
-        let heightFilter = 2160
+        let preferredMaxHeight = SettingsService.shared.preferredQuality.maxHeight ?? 2160
+        let heightFilter = min(preferredMaxHeight, 2160)
         let disableDubbed = SettingsService.shared.disableDubbedAudio
         let preferredLanguage = preferredAudioLanguage()
-        let fallbackMuxedURL = findBestMuxedURL(from: formats, maxHeight: heightFilter)
 
         // If a specific format is requested, find it
         if let format = requestedFormat, let formatId = format.formatId {
@@ -291,24 +288,35 @@ actor YTDLPService {
                         disableDubbed: disableDubbed,
                         preferredLanguage: preferredLanguage
                    ) {
+                    let fallbackMuxedURL = findBestMuxedURL(from: formats, maxHeight: heightFilter)
                     return StreamURLs(videoURL: videoURL, audioURL: audioURL, muxedURL: fallbackMuxedURL)
                 }
             }
         }
 
-        // Auto mode: find best video + best audio
-        if let videoURL = findBestVideoURL(from: formats, maxHeight: heightFilter),
-           let audioURL = findBestAudioURL(
-                from: formats,
-                disableDubbed: disableDubbed,
-                preferredLanguage: preferredLanguage
-           ) {
-            return StreamURLs(videoURL: videoURL, audioURL: audioURL, muxedURL: fallbackMuxedURL)
+        func resolveStreams(maxHeight: Int) -> StreamURLs? {
+            let fallbackMuxedURL = findBestMuxedURL(from: formats, maxHeight: maxHeight)
+            if let videoURL = findBestVideoURL(from: formats, maxHeight: maxHeight),
+               let audioURL = findBestAudioURL(
+                    from: formats,
+                    disableDubbed: disableDubbed,
+                    preferredLanguage: preferredLanguage
+               ) {
+                return StreamURLs(videoURL: videoURL, audioURL: audioURL, muxedURL: fallbackMuxedURL)
+            }
+
+            if let muxedURL = fallbackMuxedURL {
+                return StreamURLs(videoURL: nil, audioURL: nil, muxedURL: muxedURL)
+            }
+            return nil
         }
 
-        // Fallback to best muxed format
-        if let muxedURL = fallbackMuxedURL {
-            return StreamURLs(videoURL: nil, audioURL: nil, muxedURL: muxedURL)
+        // Auto mode: try preferred max height first, then fall back to best available.
+        if let streams = resolveStreams(maxHeight: heightFilter) {
+            return streams
+        }
+        if heightFilter != 2160, let streams = resolveStreams(maxHeight: 2160) {
+            return streams
         }
 
         throw YTDLPError.noStreamURL
@@ -590,8 +598,8 @@ actor YTDLPService {
 
         let output: String
         do {
-            output = try await runYTDLP(
-                args: ["--cookies-from-browser", browser, "-J", "--no-playlist", url]
+            output = try await runYTDLPWithCookies(
+                args: ["-J", "--no-playlist", url]
             )
             logger.info("getAvailableFormats: Got output, length: \(output.count)")
         } catch {
@@ -783,9 +791,8 @@ actor YTDLPService {
         try? FileManager.default.removeItem(at: outputPath)
 
         // Download with progress
-        try await runYTDLPWithProgress(
+        try await runYTDLPWithCookiesProgress(
             args: [
-                "--cookies-from-browser", browser,
                 "-f", quality,
                 "--merge-output-format", "mp4",
                 "-o", outputPath.path,
@@ -866,10 +873,29 @@ actor YTDLPService {
         }
     }
 
+    private func runYTDLPWithCookiesProgress(
+        args: [String],
+        progressHandler: @escaping (Double, String) -> Void
+    ) async throws {
+        var lastError: Error?
+        for browser in cookieBrowsers() {
+            do {
+                return try await runYTDLPWithProgress(
+                    args: ["--cookies-from-browser", browser.ytDlpValue] + args,
+                    progressHandler: progressHandler
+                )
+            } catch {
+                lastError = error
+            }
+        }
+
+        throw lastError ?? YTDLPError.processError("Unable to read browser cookies.")
+    }
+
     func getVideoInfo(videoId: String) async throws -> Video {
         let url = "https://www.youtube.com/watch?v=\(videoId)"
-        let output = try await runYTDLP(
-            args: ["--cookies-from-browser", browser, "-j", "--no-playlist", url]
+        let output = try await runYTDLPWithCookies(
+            args: ["-j", "--no-playlist", url]
         )
 
         guard let data = output.data(using: .utf8),
@@ -950,6 +976,36 @@ actor YTDLPService {
         }
     }
 
+    private func cookieBrowsers() -> [CookiesBrowser] {
+        if let browserOverride {
+            if browserOverride == .auto {
+                return CookiesBrowser.autoFallbackOrder
+            }
+            return [browserOverride]
+        }
+
+        let selection = SettingsService.shared.cookiesBrowser
+        if selection == .auto {
+            return CookiesBrowser.autoFallbackOrder
+        }
+        return [selection]
+    }
+
+    private func runYTDLPWithCookies(args: [String]) async throws -> String {
+        var lastError: Error?
+        for browser in cookieBrowsers() {
+            do {
+                return try await runYTDLP(
+                    args: ["--cookies-from-browser", browser.ytDlpValue] + args
+                )
+            } catch {
+                lastError = error
+            }
+        }
+
+        throw lastError ?? YTDLPError.processError("Unable to read browser cookies.")
+    }
+
     private func parseVideos(from output: String) -> [Video] {
         return parseVideos(from: output, filter: nil)
     }
@@ -1001,6 +1057,9 @@ actor YTDLPService {
             publishedAt = formatter.date(from: uploadDate)
         }
 
+        let viewCountValue = json["view_count"]
+        let viewCount = viewCountValue == nil ? nil : intValue(viewCountValue)
+
         return Video(
             id: id,
             title: json["title"] as? String ?? "Unknown",
@@ -1008,7 +1067,7 @@ actor YTDLPService {
             channelId: json["channel_id"] as? String ?? json["uploader_id"] as? String,
             thumbnailURL: thumbnailURL,
             duration: duration,
-            viewCount: json["view_count"] as? Int,
+            viewCount: viewCount,
             publishedAt: publishedAt
         )
     }
@@ -1038,7 +1097,13 @@ actor YTDLPService {
             }
 
             let countValue = json["playlist_count"]
-            let videoCount = countValue == nil ? nil : intValue(countValue)
+            let rawCount = countValue == nil ? nil : intValue(countValue)
+            let videoCount: Int?
+            if let rawCount, rawCount > 0 {
+                videoCount = rawCount
+            } else {
+                videoCount = nil
+            }
 
             return Playlist(
                 id: id,

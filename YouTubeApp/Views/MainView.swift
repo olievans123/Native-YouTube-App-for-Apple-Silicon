@@ -79,7 +79,7 @@ struct MainView: View {
             if isVideoFullscreen {
                 TheaterPlayerView(
                     viewModel: playerViewModel,
-                    onExit: exitFullscreen,
+                    onExit: { exitFullscreen() },
                     onMinimize: exitToMiniPlayer,
                     onEnterFullscreen: {}, // Not used when isFullscreen=true
                     isFullscreen: true
@@ -95,9 +95,10 @@ struct MainView: View {
         }
         .onChange(of: playerViewModel.currentVideo) { newValue in
             if newValue == nil {
-                isTheaterPresented = false
                 if isVideoFullscreen {
-                    exitFullscreen()
+                    exitFullscreen(preserveTheater: false)
+                } else {
+                    isTheaterPresented = false
                 }
             }
         }
@@ -121,7 +122,7 @@ struct MainView: View {
         }
     }
 
-    private func exitFullscreen() {
+    private func exitFullscreen(preserveTheater: Bool = true) {
         // Exit fullscreen to theater view
         if let window = NSApplication.shared.windows.first {
             if window.styleMask.contains(.fullScreen) {
@@ -131,8 +132,8 @@ struct MainView: View {
             }
         }
         // State will be updated by willExitFullscreenPublisher notification
-        // Theater mode stays active
-        isTheaterPresented = true
+        // Theater mode stays active unless explicitly cleared
+        isTheaterPresented = preserveTheater && playerViewModel.currentVideo != nil
     }
 
     private func exitToMiniPlayer() {
@@ -174,20 +175,27 @@ struct QualityPickerView: View {
     @ObservedObject var viewModel: PlayerViewModel
     var showsText: Bool = true
     var usesDarkBackground: Bool = true
+    @ObservedObject private var settings = SettingsService.shared
 
     private var bestAvailable: VideoFormatOption? {
-        viewModel.availableFormats
+        let explicitFormats = viewModel.availableFormats
             .filter { $0.id != VideoFormatOption.auto.id }
-            .max { lhs, rhs in
-                let lhsHeight = lhs.height ?? 0
-                let rhsHeight = rhs.height ?? 0
-                if lhsHeight != rhsHeight {
-                    return lhsHeight < rhsHeight
-                }
-                let lhsFps = Int(lhs.fps?.rounded() ?? 0)
-                let rhsFps = Int(rhs.fps?.rounded() ?? 0)
-                return lhsFps < rhsFps
+        let maxHeight = settings.preferredQuality.maxHeight
+        let preferredFormats = explicitFormats.filter { format in
+            guard let maxHeight else { return true }
+            return (format.height ?? 0) <= maxHeight
+        }
+        let candidates = preferredFormats.isEmpty ? explicitFormats : preferredFormats
+        return candidates.max { lhs, rhs in
+            let lhsHeight = lhs.height ?? 0
+            let rhsHeight = rhs.height ?? 0
+            if lhsHeight != rhsHeight {
+                return lhsHeight < rhsHeight
             }
+            let lhsFps = Int(lhs.fps?.rounded() ?? 0)
+            let rhsFps = Int(rhs.fps?.rounded() ?? 0)
+            return lhsFps < rhsFps
+        }
     }
 
     private var displayQuality: String {
@@ -357,7 +365,6 @@ struct TheaterPlayerView: View {
             if let player = viewModel.player {
                 AVPlayerViewRepresentable(player: player)
                     .ignoresSafeArea()
-                    .allowsHitTesting(false)
                     .onTapGesture {
                         onEnterFullscreen()
                     }

@@ -13,7 +13,14 @@ struct SettingsView: View {
                 }
                 .pickerStyle(.inline)
 
-                Text("Videos will play at this quality or the closest available option.")
+                Picker("When a quality is selected", selection: $settings.qualityStartMode) {
+                    ForEach(QualityStartMode.allCases) { mode in
+                        Text(mode.label).tag(mode)
+                    }
+                }
+                .pickerStyle(.inline)
+
+                Text("Auto always starts instantly. This applies to fixed quality selections.")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -29,6 +36,19 @@ struct SettingsView: View {
                     .textFieldStyle(.roundedBorder)
 
                 Text("Leave blank to prefer the default/original track.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+
+            Section("Authentication") {
+                Picker("Cookies from browser", selection: $settings.cookiesBrowser) {
+                    ForEach(CookiesBrowser.allCases) { browser in
+                        Text(browser.label).tag(browser)
+                    }
+                }
+                .pickerStyle(.inline)
+
+                Text("Auto will try Chrome, Safari, then Firefox.")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }

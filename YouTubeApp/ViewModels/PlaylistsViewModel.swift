@@ -78,7 +78,7 @@ class PlaylistsViewModel: ObservableObject {
     }
 
     func loadPlaylistCountIfNeeded(for playlist: Playlist) {
-        guard playlist.videoCount == nil else { return }
+        if let count = playlist.videoCount, count > 0 { return }
         guard !countInFlight.contains(playlist.id) else { return }
         countInFlight.insert(playlist.id)
 
@@ -86,14 +86,14 @@ class PlaylistsViewModel: ObservableObject {
             guard let self else { return }
             do {
                 let count = try await ytdlp.fetchPlaylistCount(playlistId: playlist.id)
-                await MainActor.run {
+                _ = await MainActor.run {
                     if let count {
                         self.updatePlaylistCount(count, for: playlist.id)
                     }
                     self.countInFlight.remove(playlist.id)
                 }
             } catch {
-                await MainActor.run {
+                _ = await MainActor.run {
                     self.countInFlight.remove(playlist.id)
                 }
             }
@@ -151,7 +151,7 @@ class PlaylistDetailViewModel: ObservableObject {
             guard let self else { return }
             do {
                 let count = try await ytdlp.fetchPlaylistCount(playlistId: targetPlaylistId)
-                await MainActor.run {
+                _ = await MainActor.run {
                     guard self.currentPlaylistId == targetPlaylistId else { return }
                     if let count {
                         self.totalVideoCount = count
@@ -172,9 +172,19 @@ class PlaylistDetailViewModel: ObservableObject {
                 start: nextPageStart,
                 end: nextPageStart + pageSize - 1
             )
-            videos = newVideos
-            nextPageStart += pageSize
-            updateHasMore(lastBatchCount: newVideos.count)
+            if newVideos.isEmpty {
+                let expanded = try await ytdlp.fetchPlaylistVideos(
+                    playlistId: playlistId,
+                    limit: nextPageStart + pageSize - 1
+                )
+                videos = expanded
+                nextPageStart = expanded.count + 1
+                updateHasMore(lastBatchCount: expanded.count)
+            } else {
+                videos = newVideos
+                nextPageStart += pageSize
+                updateHasMore(lastBatchCount: newVideos.count)
+            }
             print("[PlaylistDetailVM] Successfully loaded \(videos.count) videos")
             for (index, video) in videos.prefix(3).enumerated() {
                 print("[PlaylistDetailVM] Video \(index): \(video.title) (id: \(video.id))")
@@ -197,6 +207,7 @@ class PlaylistDetailViewModel: ObservableObject {
         isLoadingMore = true
         let startIndex = nextPageStart
         let endIndex = nextPageStart + pageSize - 1
+        let previousCount = videos.count
 
         do {
             let newVideos = try await ytdlp.fetchPlaylistVideosRange(
@@ -204,10 +215,24 @@ class PlaylistDetailViewModel: ObservableObject {
                 start: startIndex,
                 end: endIndex
             )
-            videos.append(contentsOf: newVideos)
-            nextPageStart = endIndex + 1
-            updateHasMore(lastBatchCount: newVideos.count)
-            print("Loaded \(newVideos.count) more videos, total: \(videos.count)")
+            if newVideos.isEmpty {
+                let expanded = try await ytdlp.fetchPlaylistVideos(
+                    playlistId: playlistId,
+                    limit: endIndex
+                )
+                if expanded.count > previousCount {
+                    videos = expanded
+                }
+                let delta = max(0, videos.count - previousCount)
+                nextPageStart = videos.count + 1
+                updateHasMore(lastBatchCount: delta)
+                print("Loaded \(delta) more videos, total: \(videos.count)")
+            } else {
+                videos.append(contentsOf: newVideos)
+                nextPageStart = endIndex + 1
+                updateHasMore(lastBatchCount: newVideos.count)
+                print("Loaded \(newVideos.count) more videos, total: \(videos.count)")
+            }
         } catch {
             print("Load more error: \(error)")
         }

@@ -87,6 +87,29 @@ class PlayerViewModel: ObservableObject {
         currentTime = 0
         duration = 0
 
+        let cacheKey = "\(video.id)|\(requestedFormat?.id ?? "auto")"
+        if let cachedStreams = streamCache[cacheKey] {
+            if let cachedFormats = await formatCache.getCachedFormats(for: video.id),
+               cachedFormats.count > 1 {
+                availableFormats = cachedFormats
+                if !cachedFormats.contains(where: { $0.id == selectedFormat.id }) {
+                    selectedFormat = .auto
+                }
+            }
+            do {
+                try await startPlaybackWithStreams(
+                    cachedStreams,
+                    requestedFormat: requestedFormat,
+                    resumeTime: resumeTime,
+                    autoPlay: autoPlay,
+                    token: token
+                )
+                return
+            } catch {
+                streamCache.removeValue(forKey: cacheKey)
+            }
+        }
+
         do {
             // Single combined call - gets formats, channel, and stream URLs together
             let (formats, channel, streams) = try await ytdlp.getVideoInfoCombined(
@@ -121,51 +144,14 @@ class PlayerViewModel: ObservableObject {
             }
 
             // Cache the streams
-            let cacheKey = "\(video.id)|\(requestedFormat?.id ?? "auto")"
             streamCache[cacheKey] = streams
 
-            let canFastStart = requestedFormat == nil &&
-                streams.hasSeparateStreams &&
-                streams.muxedURL != nil
-
-            if canFastStart, let muxedURL = streams.muxedURL {
-                activeQualityLabel = "Auto"
-                pendingQualityLabel = pendingLabel(for: selectedFormat)
-                pendingQualityItemId = nil
-                let muxedItem = AVPlayerItem(url: muxedURL)
-                startPlayback(
-                    with: muxedItem,
-                    resumeTime: resumeTime,
-                    autoPlay: autoPlay,
-                    startImmediately: true,
-                    shouldPreload: true
-                )
-
-                Task { [weak self] in
-                    guard let self else { return }
-                    do {
-                        let fullItem = try await self.makePlayerItem(from: streams)
-                        guard self.playbackToken == token else { return }
-                        self.pendingQualityItemId = ObjectIdentifier(fullItem)
-                        self.replaceCurrentItemPreservingTime(fullItem)
-                    } catch {
-                        // Keep the fast-start muxed stream if the upgrade fails.
-                    }
-                }
-                return
-            }
-
-            activeQualityLabel = selectedFormat.id == VideoFormatOption.auto.id ? "Auto" : selectedFormat.shortLabel
-            pendingQualityLabel = nil
-            pendingQualityItemId = nil
-            let playerItem = try await makePlayerItem(from: streams)
-            guard playbackToken == token else { return }
-            startPlayback(
-                with: playerItem,
+            try await startPlaybackWithStreams(
+                streams,
+                requestedFormat: requestedFormat,
                 resumeTime: resumeTime,
                 autoPlay: autoPlay,
-                startImmediately: false,
-                shouldPreload: true
+                token: token
             )
         } catch {
             if playbackToken == token {
@@ -266,9 +252,15 @@ class PlayerViewModel: ObservableObject {
         // Don't preload if already cached
         guard streamCache[cacheKey] == nil else { return }
 
-        Task.detached(priority: .background) { [ytdlp] in
+        Task.detached(priority: .background) { [ytdlp, formatCache] in
             do {
-                let streams = try await ytdlp.getStreams(videoId: nextVideo.id, format: nil)
+                let (formats, _, streams) = try await ytdlp.getVideoInfoCombined(
+                    videoId: nextVideo.id,
+                    requestedFormat: nil
+                )
+                if formats.count > 1 {
+                    await formatCache.cacheFormats(formats, for: nextVideo.id)
+                }
                 await MainActor.run { [weak self] in
                     self?.streamCache[cacheKey] = streams
                 }
@@ -276,6 +268,63 @@ class PlayerViewModel: ObservableObject {
                 // Silently fail - preloading is best-effort
             }
         }
+    }
+
+    private func startPlaybackWithStreams(
+        _ streams: StreamURLs,
+        requestedFormat: VideoFormatOption?,
+        resumeTime: CMTime?,
+        autoPlay: Bool,
+        token: UUID
+    ) async throws {
+        guard playbackToken == token else { return }
+
+        let settings = SettingsService.shared
+        let isAutoSelection = requestedFormat == nil && settings.preferredQuality == .auto
+        let allowsFastStart = isAutoSelection || settings.qualityStartMode == .instantUpgrade
+        let canFastStart = allowsFastStart &&
+            streams.hasSeparateStreams &&
+            streams.muxedURL != nil
+
+        if canFastStart, let muxedURL = streams.muxedURL {
+            activeQualityLabel = "Auto"
+            pendingQualityLabel = pendingLabel(for: selectedFormat)
+            pendingQualityItemId = nil
+            let muxedItem = AVPlayerItem(url: muxedURL)
+            startPlayback(
+                with: muxedItem,
+                resumeTime: resumeTime,
+                autoPlay: autoPlay,
+                startImmediately: true,
+                shouldPreload: true
+            )
+
+            Task { [weak self] in
+                guard let self else { return }
+                do {
+                    let fullItem = try await self.makePlayerItem(from: streams)
+                    guard self.playbackToken == token else { return }
+                    self.pendingQualityItemId = ObjectIdentifier(fullItem)
+                    self.replaceCurrentItemPreservingTime(fullItem)
+                } catch {
+                    // Keep the fast-start muxed stream if the upgrade fails.
+                }
+            }
+            return
+        }
+
+        activeQualityLabel = selectedFormat.id == VideoFormatOption.auto.id ? "Auto" : selectedFormat.shortLabel
+        pendingQualityLabel = nil
+        pendingQualityItemId = nil
+        let playerItem = try await makePlayerItem(from: streams)
+        guard playbackToken == token else { return }
+        startPlayback(
+            with: playerItem,
+            resumeTime: resumeTime,
+            autoPlay: autoPlay,
+            startImmediately: false,
+            shouldPreload: true
+        )
     }
 
     private func startPlayback(
@@ -353,6 +402,19 @@ class PlayerViewModel: ObservableObject {
         do {
             pendingQualityLabel = pendingLabel(for: format)
             pendingQualityItemId = nil
+            let cacheKey = "\(video.id)|\(format.id)"
+            if let cachedStreams = streamCache[cacheKey] {
+                do {
+                    let playerItem = try await makePlayerItem(from: cachedStreams)
+                    guard playbackToken == token else { return }
+                    pendingQualityItemId = ObjectIdentifier(playerItem)
+                    replaceCurrentItemPreservingTime(playerItem, startImmediately: false)
+                    return
+                } catch {
+                    streamCache.removeValue(forKey: cacheKey)
+                }
+            }
+
             let (formats, channel, streams) = try await ytdlp.getVideoInfoCombined(
                 videoId: video.id,
                 requestedFormat: format
@@ -382,7 +444,6 @@ class PlayerViewModel: ObservableObject {
                 }
             }
 
-            let cacheKey = "\(video.id)|\(format.id)"
             streamCache[cacheKey] = streams
 
             let playerItem = try await makePlayerItem(from: streams)
@@ -600,7 +661,13 @@ class PlayerViewModel: ObservableObject {
     private func pendingLabel(for format: VideoFormatOption) -> String {
         if format.id == VideoFormatOption.auto.id {
             let explicitFormats = availableFormats.filter { $0.id != VideoFormatOption.auto.id }
-            let bestAvailable = explicitFormats.max { lhs, rhs in
+            let maxHeight = SettingsService.shared.preferredQuality.maxHeight
+            let preferredFormats = explicitFormats.filter { format in
+                guard let maxHeight else { return true }
+                return (format.height ?? 0) <= maxHeight
+            }
+            let candidates = preferredFormats.isEmpty ? explicitFormats : preferredFormats
+            let bestAvailable = candidates.max { lhs, rhs in
                 let lhsHeight = lhs.height ?? 0
                 let rhsHeight = rhs.height ?? 0
                 if lhsHeight != rhsHeight { return lhsHeight < rhsHeight }
